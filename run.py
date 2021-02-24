@@ -101,6 +101,15 @@ def create_deeplob(T, NF, number_of_lstm):
 
 
 if __name__ == "__main__":
+    HORIZON = 10
+    horizons = {
+        1: 0,
+        2: 1,
+        3: 2,
+        5: 3,
+        10: 4
+    }
+    horizon_idx = horizons[HORIZON]
     data_path = 'F:/Datasets/FI2010/deeplob/'
 
     dec_train = np.loadtxt(data_path + 'Train_Dst_NoAuction_DecPre_CF_6.txt')
@@ -120,12 +129,12 @@ if __name__ == "__main__":
 
     # prepare training data. We feed past 100 observations into our algorithms and choose the prediction horizon.
     trainX_CNN, trainY_CNN = data_classification(train_lob, train_label, T=100)
-    trainY_CNN = trainY_CNN[:, 4] - 1
+    trainY_CNN = trainY_CNN[:, horizon_idx] - 1
     trainY_CNN = np_utils.to_categorical(trainY_CNN, 3)
 
     # prepare test data.
     testX_CNN, testY_CNN = data_classification(test_lob, test_label, T=100)
-    testY_CNN = testY_CNN[:, 3] - 1
+    testY_CNN = testY_CNN[:, horizon_idx] - 1
     testY_CNN = np_utils.to_categorical(testY_CNN, 3)
 
     deeplob = create_deeplob(100, 40, 64)
